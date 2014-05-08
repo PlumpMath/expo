@@ -85,8 +85,6 @@
 (declare change-procedure)
 (defn commit [] (change-procedure #(mapv revise %)))
 
-;;jank privacy. Only way. Keeps the namespace we're invading unpolluted.
-;;Also symptom of doing everything wrong. Ah well. It gets worse later.
 (let [shape-modes #{:corner :corners
                     :radius :center}
       stroke-caps #{:square :project :round}
