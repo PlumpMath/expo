@@ -1,7 +1,4 @@
-(ns tsg.kits.introspection
-  (:require
-   [clojure.pprint :as pprint]
-   [clojure.reflect :as reflect]))
+(ns expo.introspection)
 
 (defn apropos+
   "Given a regular expression or stringable thing, return a seq of
@@ -29,10 +26,10 @@ str-or-pattern."
          vals
          sort
          (map #(if (= 1 (count %)) (first %) %))
-         pprint)))
+         clojure.pprint/pprint)))
 
 (defn print-aliases []
-  (pprint (sort (ns-aliases *ns*))))
+  (clojure.pprint/pprint (sort (ns-aliases *ns*))))
 
 (defn reflect-methods [x]
   (->> x
