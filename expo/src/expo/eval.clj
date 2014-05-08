@@ -43,6 +43,11 @@ syntax is the same as for letfn forms."
         [(([(_ :guard #(= name %)) & args] :seq) :guard list?)] (apply f args)
         :else x))))
 
+(defn to-fixpoint [f x]
+  (loop [a (f x)]
+    (let [b (f a)]
+      (if (= a b) b (recur b)))))
+
 (defmacro macrolet*
   "Direct macrolet, expands defined forms in body
  immediately without macroexpanding rest of body.
@@ -55,6 +60,7 @@ by previously defined forms."
     (cons 'do body)
     (let [[mdef & mdefs'] mdefs]
       (cons 'macrolet*
-            (clojure.walk/prewalk
-             (transformation-fn mdef)
+            (to-fixpoint ;; currently will bail on fixpoint macro, leaving free variable. Fix this.
+             (partial clojure.walk/prewalk
+                      (transformation-fn mdef))
              `[~mdefs' ~@body])))))
