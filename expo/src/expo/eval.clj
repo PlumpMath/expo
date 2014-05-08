@@ -1,6 +1,26 @@
 (ns expo.eval
   (:use [clojure.core.match :only [match]]))
 
+(defn eval-in-ns
+  "Evaluates frm in namespace, retuns to
+calling namespace, and returns value of
+evaluation."
+  ([namespace frm]
+     (let [old-ns *ns*
+           p (promise)]
+       (in-ns namespace)
+       (deliver p (eval frm))
+       (in-ns (ns-name old-ns))
+       @p))
+  ([namespace frm repl-env]
+     (let [old-ns *ns*
+           p (promise)]
+       (in-ns namespace)
+       (deliver p (eval frm))
+       (clojure.unityRepl/update-repl-env repl-env)
+       (in-ns (ns-name old-ns))
+       @p)))
+
 (defmacro symbol-macrolet*
   "Direct symbol-macrolet, expands defined forms in body
  immediately without macroexpanding rest of body."
