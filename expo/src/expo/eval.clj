@@ -1,5 +1,6 @@
 (ns expo.eval
-  (:use [clojure.core.match :only [match]]))
+  (:use [clojure.core.match :only [match]])
+  (:require [clojure.tools.macro]))
 
 (defn eval-in-ns
   "Evaluates frm in namespace, retuns to
@@ -11,15 +12,14 @@ evaluation."
        (in-ns namespace)
        (deliver p (eval frm))
        (in-ns (ns-name old-ns))
-       @p))
-  ([namespace frm repl-env]
-     (let [old-ns *ns*
-           p (promise)]
-       (in-ns namespace)
-       (deliver p (eval frm))
-       (clojure.unityRepl/update-repl-env repl-env)
-       (in-ns (ns-name old-ns))
        @p)))
+
+(defmacro symbol-macrolet
+  "Same as clojure.tools.symbol-macrolet. Define local 
+symbol macros that are used in the expansion of exprs.
+The syntax is the same as for let forms."
+  [symbol-bindings & exprs]
+  `(clojure.tools.macro/symbol-macrolet ~symbol-bindings ~@exprs))
 
 (defmacro symbol-macrolet*
   "Direct symbol-macrolet, expands defined forms in body
@@ -28,6 +28,13 @@ evaluation."
   (let [sym-map (apply hash-map mdefs)]
     (assert (every? symbol? (keys sym-map)))
     (cons 'do (clojure.walk/postwalk-replace sym-map body))))
+
+(defmacro macrolet 
+  "Same as clojure.tools.macro/macrolet. Define 
+local macros that are used in the expansion of exprs. The
+syntax is the same as for letfn forms."
+  [& args]
+  `(clojure.tools.macro/macrolet ~@args))
 
 (defn transformation-fn [[name & _ :as fsrc]]
   (let [f (eval (cons 'fn fsrc))]

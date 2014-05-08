@@ -6,4 +6,5 @@
                  [riddley "0.1.7"]
                  [org.clojure/core.match "0.2.1"]
                  [quil "1.6.0-SNAPSHOT"]
-                 [serializable-fn "1.1.3"]])
+                 [serializable-fn "1.1.3"]
+                 [org.clojure/tools.macro "0.1.2"]])
