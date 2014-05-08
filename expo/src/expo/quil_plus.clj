@@ -1,9 +1,7 @@
-;;This file won't compile on its own, it's intended to be (jankily) loaded from
-;;nib.core. Which is all nib.core does. GOD this is jank...
-;;TODO: find less stupid names for the environment-getters than "ew" "eh" etc
-;;TODO: figure out a less stupid way to do any of this. Or not. Ask David if such a thing might exist at all.
+;; This file won't compile on its own, it's intended to be loaded from elsewhere
+;; TODO: find less stupid names for the environment-getters than "ew" "eh" etc
 
-;;redefines defn at the end, fyi
+;; redefines defn at the end, fyi
 
 (in-ns 'quil.core)
 
@@ -34,7 +32,7 @@
         `(quote ~v))
       x))
 
-(defn
+(defn ;; patching an old bug
   ^{:requires-bindings true
     :processing-name "bezierVertex()"
     :category "Shape"
