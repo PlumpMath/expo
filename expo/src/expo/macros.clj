@@ -1,4 +1,5 @@
-(ns tsg.kits.macros)
+(ns tsg.kits.macros
+  (:use [clojure.core.match :only [match]]))
 
 (defmacro symbol-macrolet*
   "Direct symbol-macrolet, expands defined forms in body
@@ -8,25 +9,24 @@
     (assert (every? symbol? (keys sym-map)))
     (cons 'do (clojure.walk/postwalk-replace sym-map body))))
 
+(defn transformation-fn [[name & _ :as fsrc]]
+  (let [f (eval (cons 'fn fsrc))]
+    (fn [x]
+      (match [x]
+        [(([name & args] :seq) :guard list?)] (apply f args)
+        :else x))))
+
 (defmacro macrolet*
   "Direct macrolet, expands defined forms in body
- immediately without macroexpanding rest of body."
+ immediately without macroexpanding rest of body.
+Like macros, will recursively walk inside expanded forms, 
+so be careful not to write infinite loops. Quotes will
+not halt evaluation. Definitions are subject to rewriting
+by previously defined forms."
   [mdefs & body]
-  (let [transforms
-         (reduce
-           (fn [bldg [name & body]]
-             (assoc bldg name
-              (eval (list* 'fn name body))))
-           {}
-           mdefs)]
-    (cons 'do
-      (clojure.walk/prewalk
-        (fn [x]
-          (if (list? x)
-            (if-let [[head & tail] (seq x)]
-              (if-let [f (transforms head)]
-                (apply f tail)
-                x)
-              x)
-            x))
-        body))))
+  (if (empty? mdefs)
+    body
+    (let [[mdef & mdefs'] mdefs]
+      (->> `(~mdefs' ~body)
+           (clojure.walk/prewalk (transformation-fn mdef))
+           (cons `macrolet*)))))
