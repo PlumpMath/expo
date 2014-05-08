@@ -58,25 +58,6 @@
      (push-do #(deliver p (f)))
      @p))
 
-(defn vassoc
-  "what a weird function, I wonder if it has any point."
- [v i x & {:keys [fill clamp]
-              :or   {fill  nil
-                     clamp true}
-              :as opts}]
-  (let [c (count v)]
-    (if clamp
-      (assoc-in v [(min c (max 0 i))] x)
-      (cond
-       (< i 0) (vec (cons x (concat (repeat (dec (abs i))
-                                            fill)
-                                    v)))
-       (< i c) (update-in v [i] x)
-       :else   (loop [v v, i i]
-                 (if (< 0 i)
-                   (recur (conj v fill), (dec i))
-                   (conj v x)))))))
-
 (defmacro let-mouse [[x y] & body]
   `(let [~x (mouse-x)
          ~y (mouse-y)]
