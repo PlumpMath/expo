@@ -1,15 +1,19 @@
-;; Quil extension via dirty namespace-invasion of quil.core.
-;; Seems neccessary for repl tricks.
-
 (ns expo.quil-plus
-  (:require [quil.core]))
+  (:require quil.core
+            potemkin
+            [clojure.set :as sets]
+            [clojure.string :as string]
+            [serializable.fn :as sfn])
+  (:use [clojure.pprint :only [pprint, print-table]]))
 
-(in-ns 'quil.core)
-
-(require '[clojure.set :as sets])
-(require '[clojure.string :as string])
-(require '[serializable.fn :as sfn])
-(use '[clojure.pprint :only [pprint, print-table]])
+;; absorb quil.core:
+(let [qcvars (->> 'quil.core
+                  find-ns
+                  ns-publics
+                  keys)]
+  (eval
+   (list 'potemkin/import-vars
+         (vec (cons 'quil.core qcvars)))))
 
 ;; serializable functions
 

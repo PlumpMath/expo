@@ -1,6 +1,5 @@
 (ns expo.sketch1
-  (:require [expo.quil-plus :as qp])
-  (:require [quil.core :refer :all]))
+  (:require [expo.quil-plus :refer :all]))
 
 (defn setup []
   (smooth)                          ;; Turn on anti-aliasing
@@ -26,3 +25,5 @@
   :setup setup                      ;; Specify the setup fn
   :draw draw                        ;; Specify the draw fn
   :size [323 200])                  ;; You struggle to beat the golden ratio
+
+

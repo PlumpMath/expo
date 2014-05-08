@@ -1,4 +1,5 @@
-(ns expo.introspection)
+(ns expo.introspection
+  (:require [clojure.reflect]))
 
 (defn apropos+
   "Given a regular expression or stringable thing, return a seq of
@@ -19,7 +20,7 @@ str-or-pattern."
 (defn aproprint [str-or-pattern]
   (clojure.pprint/pprint (apropos+ str-or-pattern)))
 
-(defn print-publics [ns]
+(defn print-publics [ns] 
   (let [nim (ns-interns ns)]
     (->> (keys nim)
          (group-by nim)
