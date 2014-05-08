@@ -1,7 +1,8 @@
-;; This file won't compile on its own, it's intended to be loaded from elsewhere
-;; TODO: find less stupid names for the environment-getters than "ew" "eh" etc
+;; Quil extension via dirty namespace-invasion of quil.core.
+;; Seems neccessary for repl tricks.
 
-;; redefines defn at the end, fyi
+(ns expo.quil-plus
+  (:require [quil.core]))
 
 (in-ns 'quil.core)
 
@@ -10,8 +11,13 @@
 (require '[serializable.fn :as sfn])
 (use '[clojure.pprint :only [pprint, print-table]])
 
-(defmacro defn-s [name & body]
-  `(def ~name (sfn/fn ~name ~@body)))
+;; serializable functions
+
+(defmacro fn* [name & body]
+  `(sfn/fn ~name ~@body))
+
+(defmacro defn* [name & body]
+  `(def ~name (fn* ~name ~@body)))
 
 (defmacro prinlim [{:keys [level length] :or {level 5 length 5}}
                    & body]
@@ -23,7 +29,6 @@
   (doseq [x (sort (map str xs))]
     (println x)))
 
-
 (defmacro var-catcher [x]
   (or (when (or (not (symbol? x))
                 (find &env x))
@@ -32,36 +37,7 @@
         `(quote ~v))
       x))
 
-(defn ;; patching an old bug
-  ^{:requires-bindings true
-    :processing-name "bezierVertex()"
-    :category "Shape"
-    :subcategory "Vertex"
-    :added "1.0"}
-  bezier-vertex
-  "Specifies vertex coordinates for Bezier curves. Each call to
-  bezier-vertex defines the position of two control points and one
-  anchor point of a Bezier curve, adding a new segment to a line or
-  shape. The first time bezier-vertex is used within a begin-shape
-  call, it must be prefaced with a call to vertex to set the first
-  anchor point. This function must be used between begin-shape and
-  end-shape and only when there is no parameter specified to
-  begin-shape."
-  ([cx1 cy1 cx2 cy2 x y]
-     (.bezierVertex (current-applet)
-                    (float cx1) (float cy1)
-                    (float cx2) (float cy2)
-                    (float x) (float y)))
-  ([cx1 cy1 cz1 cx2 cy2 cz2 x y z]
-     (.bezierVertex (current-applet)
-                    (float cx1) (float cy1) (float cz1)
-                    (float cx2) (float cy2) (float cz2)
-                    (float x) (float y) (float z))))
-
-
 (def frame-timeout 1000)
-
-
 
 (defn call-all [fs]
   (doseq [f fs] (f)))
@@ -325,9 +301,3 @@
             (pause)
             (background 255 255 0)
             (swap! exception-storage (fn [es] (conj es e)))))))))
-
-
-(comment
-  ;;IMPORTANT TO NOTE THE WEIRDNESS BELOW!
-  )
-
