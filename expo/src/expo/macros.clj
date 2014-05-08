@@ -13,7 +13,7 @@
   (let [f (eval (cons 'fn fsrc))]
     (fn [x]
       (match [x]
-        [(([name & args] :seq) :guard list?)] (apply f args)
+        [(([(_ :guard #(= name %)) & args] :seq) :guard list?)] (apply f args)
         :else x))))
 
 (defmacro macrolet*
