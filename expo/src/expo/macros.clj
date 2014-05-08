@@ -1,4 +1,4 @@
-(ns tsg.kits.macros
+(ns expo.macros
   (:use [clojure.core.match :only [match]]))
 
 (defmacro symbol-macrolet*
