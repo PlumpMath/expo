@@ -1,4 +1,5 @@
 (ns expo.sketch1
+  (:refer-clojure :exclude [fn])
   (:require [expo.quil-plus :refer :all]))
 
 (defn setup []
@@ -9,21 +10,24 @@
 (def counter (atom 0))
                       
 (defn draw []
-  ;; (stroke (random 255))             ;; Set the stroke colour to a random grey
-  ;; (stroke-weight (random 10))       ;; Set the stroke thickness randomly
-  ;; (fill (random 255))               ;; Set the fill colour to a random grey
-
-  ;; (let [diam (random 100)           ;; Set the diameter to a value between 0 and 100
-  ;;       x    (random (width))       ;; Set the x coord randomly within the sketch
-  ;;       y    (random (height))]     ;; Set the y coord randomly within the sketch
-  ;;   (ellipse x y diam diam))          ;; Draw a circle at x y with the correct diameter
   (swap! counter inc)
   (run)) 
 
-(defsketch example                  ;; Define a new sketch named example
-  :title "Oh so many grey circles"  ;; Set the title of the sketch
-  :setup setup                      ;; Specify the setup fn
-  :draw draw                        ;; Specify the draw fn
-  :size [323 200])                  ;; You struggle to beat the golden ratio
+(defsketch example   
+  :title "Sketch 1"  
+  :setup setup                      
+  :draw draw                        
+  :size [323 200])                  
 
+;; then interact via the repl!
 
+(comment
+  (do
+    (push-fn (fn [] (background 0 0 255)))
+    (push-fn (fn [] (let-mouse [x y] (ellipse x y 10 10))))
+    (undo)
+    (push-fn (fn [] (let-mouse [x y] (ellipse x y 20 20))))))
+
+;; etc
+
+;; use save-program when you're happy with the results

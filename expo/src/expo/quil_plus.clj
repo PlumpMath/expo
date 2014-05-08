@@ -281,3 +281,9 @@
             (pause)
             (background 255 255 0)
             (swap! exception-storage (fn [es] (conj es e)))))))))
+
+(defn save-program [f & opts]
+  (let [p (->> (procedure)
+               (map #(with-out-str (print %)))
+               (clojure.string/join "\n"))]
+    (apply spit f p opts)))
