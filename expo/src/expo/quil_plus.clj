@@ -15,13 +15,8 @@
    (list 'potemkin/import-vars
          (vec (cons 'quil.core qcvars)))))
 
-;; serializable functions
-
-(defmacro fn* [name & body]
-  `(sfn/fn ~name ~@body))
-
-(defmacro defn* [name & body]
-  `(def ~name (fn* ~name ~@body)))
+;; absorb serializable.fn:
+(potemkin/import-vars [serializable.fn fn])
 
 (defmacro prinlim [{:keys [level length] :or {level 5 length 5}}
                    & body]
