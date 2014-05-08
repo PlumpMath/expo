@@ -1,10 +1,6 @@
 # expo
 
-A Clojure library designed to ... well, that part is up to you.
-
-## Usage
-
-FIXME
+Exposition of some stuff you can do
 
 ## License
 
