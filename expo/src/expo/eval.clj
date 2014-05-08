@@ -1,4 +1,4 @@
-(ns expo.macros
+(ns expo.eval
   (:use [clojure.core.match :only [match]]))
 
 (defmacro symbol-macrolet*
