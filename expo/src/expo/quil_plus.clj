@@ -83,17 +83,25 @@
 
 
 (declare change-procedure)
+
 (defn commit [] (change-procedure #(mapv revise %)))
 
-(let [shape-modes #{:corner :corners
-                    :radius :center}
-      stroke-caps #{:square :project :round}
-      negs        #{:ns :nf}
-      mono-syms (sets/union shape-modes
-                            stroke-caps
-                            negs)
-      do-vec (atom [])]
 
+;; vocabulary for interacting with Processing
+(def shape-modes #{:corner :corners
+                   :radius :center})
+(def stroke-caps #{:square :project :round})
+(def negs        #{:ns :nf})
+(def mono-syms   (sets/union shape-modes
+                             stroke-caps
+                             negs))
+
+;; top-level let-over-lambda's kind of obnoxious,
+;; but we really don't want to be worrying about
+;; messing up this piece of state while live coding
+
+(let [do-vec (atom [])]
+  
   (defn push-do [f]
     (swap! do-vec #(conj % f)))
   
