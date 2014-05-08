@@ -52,8 +52,9 @@ not halt evaluation. Definitions are subject to rewriting
 by previously defined forms."
   [mdefs & body]
   (if (empty? mdefs)
-    body
+    (cons 'do body)
     (let [[mdef & mdefs'] mdefs]
-      (->> `(~mdefs' ~body)
-           (clojure.walk/prewalk (transformation-fn mdef))
-           (cons `macrolet*)))))
+      (cons 'macrolet*
+            (clojure.walk/prewalk
+             (transformation-fn mdef)
+             `[~mdefs' ~@body])))))
