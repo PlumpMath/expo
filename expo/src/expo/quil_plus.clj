@@ -221,17 +221,12 @@
             curl @present-atm]
         (doseq [i (range (count hist))]
           (let [x (hist i)]
-            (println (format
-                      "%1$s %2$3d | %3$s %1$s"
-                      (if (= i curl)
-                        "*"
-                        " "),
-                      i,
-                      (apply str
-                             (interpose "; "
-                                        (map
-                                         #(:timestamp (meta %))
-                                         (hist i))))))))))
+            (->> (hist i)
+                 (map #(:timestamp (meta %)))
+                 (interpose "; ")
+                 (apply str)
+                 (format "%1$s %2$3d | %3$s %1$s" (if (= i curl) "*", " "), i)
+                 println)))))
 
     (defn print-program [& {:keys [index] :or {index (dec (count @history-atm))}}]
       (if (and (< -1 index)
